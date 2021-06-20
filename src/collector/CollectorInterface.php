@@ -30,6 +30,11 @@ interface CollectorInterface
     public function getRecipients(): ?array;
 
     /**
+     * @return string[]|null
+     */
+    public function getWrongRecipients(): ?array;
+
+    /**
      * @param array $data
      * @param null|string $formName
      * @return bool

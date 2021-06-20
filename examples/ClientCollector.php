@@ -84,15 +84,10 @@ class ClientCollector extends AbstractCollector
      */
     public function getActiveInput(ActiveForm $form): string
     {
-        return $form->field($this, 'clientId')->dropDown(
-            Select2Widget::class, [
-                'items' => $this->getList(),
-                'options' => [
-                    'multiple' => true,
-                ],
-                'clientOptions' => [
-                    'minimumResultsForSearch' => 5,
-                ],
+        return $form->field($this, 'clientId')->dropDownList(
+            $this->getList(),
+            [
+                'multiple' => true,
             ]
         );
     }

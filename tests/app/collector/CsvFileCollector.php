@@ -4,28 +4,56 @@
 namespace app\collector;
 
 use elfuvo\postman\collector\AbstractCollector;
+use elfuvo\postman\models\Recipient;
+use Yii;
 
 /**
  * Class CsvFileCollector
- * @package app\collectors
+ * @package app\collector
  */
 class CsvFileCollector extends AbstractCollector
 {
+    /**
+     * @var array
+     */
+    protected $wrongRecipients = [];
+
     /**
      * @return array|null
      */
     public function getRecipients(): ?array
     {
-        $file = \Yii::getAlias('@root/tests/_data/recipients.csv');
-        if (file_exists($file)) {
+        $file = dirname(dirname(__DIR__)) . '/_data/recipients.csv';
+        $emails = [];
+        if (is_file($file)) {
             $fh = fopen($file, 'r');
-            $data = fgetcsv($fh, null, ',');
-            if ($data) {
-
+            $index = 0;
+            while ($row = fgetcsv($fh)) {
+                if (count($row) > 0) {
+                    $recipient = new Recipient(['email' => trim($row[0]), 'name' => trim($row[1])]);
+                    if ($recipient->validate()) {
+                        array_push($emails, $recipient);
+                    } else {
+                        array_push($this->wrongRecipients, 'row: ' . $index . ' - "' . $recipient->email . '"');
+                    }
+                } else {
+                    array_push($this->wrongRecipients, 'row: ' . $index . ' - no data');
+                }
+                $index++;
             }
             fclose($fh);
+        } else {
+            Yii::error('file "' . $file . '" does not exists');
         }
 
-        return null;
+        return $emails;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getWrongRecipients(): ?array
+    {
+        return $this->wrongRecipients;
     }
 }

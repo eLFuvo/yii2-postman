@@ -26,6 +26,11 @@ class TextInputCollector extends AbstractCollector
     public $email;
 
     /**
+     * @var array
+     */
+    protected $wrongRecipients = [];
+
+    /**
      * @param ActiveForm $form
      * @return string
      */
@@ -60,18 +65,29 @@ class TextInputCollector extends AbstractCollector
     public function getRecipients(): ?array
     {
         if ($this->email && preg_match_all('#([^\s,;]+)#', $this->email, $matches)) {
-            $emails = array_map(function ($email) {
-                return new Recipient(['email' => $email]);
-            }, $matches[1]);
+            $emails = [];
+            foreach ($matches[1] as $email) {
+                $recipient = new Recipient(['email' => trim($email)]);
+                if ($recipient->validate()) {
+                    array_push($emails, $recipient);
+                } else {
+                    array_push($this->wrongRecipients, '"' . $recipient->email . '"');
+                }
+            }
 
-            return array_filter($emails, function (Recipient $recipient) {
-                return $recipient->validate();
-            });
+            return $emails;
         }
 
         return null;
     }
 
+    /**
+     * @return array|null
+     */
+    public function getWrongRecipients(): ?array
+    {
+        return $this->wrongRecipients;
+    }
 
     /**
      * @return array|string[]

@@ -6,52 +6,55 @@
  * Time: 21:33
  */
 
+use elfuvo\postman\actions\IndexAction;
+use elfuvo\postman\actions\ProgressAction;
+
 return [
     'id' => 'tests',
-    'controllerNamespace' => 'elfuvo\\import\\app\\controllers',
-    'viewPath' => '@app/views',
-    'defaultRoute' => 'default/upload-file-import',
-    'name' => 'Import wizard',
+    'name' => 'Postman',
     'timeZone' => 'UTC',
     'language' => 'ru',
-    'basePath' => dirname(dirname(__DIR__)),
+    'basePath' => dirname(dirname(dirname(__DIR__))),
     'aliases' => [
         '@root' => dirname(dirname(dirname(__DIR__))),
         '@vendor' => '@root/vendor',
         '@bower' => '@vendor/bower-asset',
         '@app' => '@root/tests/app',
         '@runtime' => '@app/runtime',
+        '@webroot' => '@app/web',
+        '@web' => '/',
     ],
     'container' => [
         'singletons' => [],
         'definitions' => [
-            \elfuvo\import\result\ResultImportInterface::class =>
-                \elfuvo\import\result\FileContinuesResultImport::class,
-            \elfuvo\import\adapter\AdapterFabricInterface::class => [
-                'class' => \elfuvo\import\adapter\AdapterFabricDefault::class,
-                'adapters' => [
-                    \elfuvo\import\adapter\AdapterImportExcel::class,
-                    \elfuvo\import\adapter\AdapterImportCsv::class,
-                ]
+            \elfuvo\postman\processor\ProcessorInterface::class => [
+                'class' => \elfuvo\postman\processor\MailProcessor::class,
+                'collectors' => [
+                    \elfuvo\postman\collector\TextInputCollector::class,
+                ],
             ],
+            \elfuvo\postman\result\ResultInterface::class => \elfuvo\postman\result\FileContinuesResult::class,
             yii\web\Request::class => [
                 'class' => yii\web\Request::class,
                 'enableCookieValidation' => false,
                 'enableCsrfValidation' => false,
-            ]
+            ],
+            IndexAction::class => [
+                'class' => IndexAction::class,
+                'view' => '@root/src/views/index',
+                'useQueue' => false,
+            ],
+            ProgressAction::class => [
+                'class' => ProgressAction::class,
+                'view' => '@root/src/views/progress'
+            ],
         ],
     ],
     'modules' => [],
     'components' => [
-        'redis' => [
-            'class' => 'yii\redis\Connection',
-            'hostname' => 'localhost',
-            'port' => 6379,
-            'database' => 0,
-        ],
         'cache' => [
             'class' => yii\caching\FileCache::class,
-            'keyPrefix' => 'import-wizard',
+            'keyPrefix' => 'postman',
         ],
         'queue' => [
             'class' => \yii\queue\file\Queue::class,
@@ -60,12 +63,18 @@ return [
         'i18n' => [
             'class' => \yii\i18n\I18N::class,
             'translations' => [
-                'import-wizard' => [
+                'postman' => [
                     'class' => \yii\i18n\PhpMessageSource::class,
                     'sourceLanguage' => 'en',
-                    'basePath' => '@app/messages',
+                    'basePath' => '@root/src/messages',
                 ],
             ],
+        ],
+        'mailer' => [
+            'class' => \yii\swiftmailer\Mailer::class,
+            'htmlLayout' => '@app/mail/layouts/html',
+            'textLayout' => '@app/mail/layouts/text',
+            'useFileTransport' => true,
         ],
     ]
 ];

@@ -11,6 +11,7 @@ namespace elfuvo\postman\processor;
 use elfuvo\postman\exceptions\TimeLimitException;
 use elfuvo\postman\result\ResultInterface;
 use Exception;
+use Yii;
 
 /**
  * Class MailProcessor
@@ -24,8 +25,9 @@ class MailProcessor extends AbstractProcessor
     public function execute(): ResultInterface
     {
         $recipients = $this->prepareExecute();
+
         if ($recipients) {
-            $emailMessage = $this->postman->compose(
+            $emailMessage = Yii::$app->getMailer()->compose(
                 $this->message->template,
                 ['content' => $this->message->body]
             )->setSubject($this->message->subject);
@@ -35,7 +37,7 @@ class MailProcessor extends AbstractProcessor
             foreach ($recipients as $email => $name) {
                 try {
                     $sent = $emailMessage->setTo($name > '' ? [$email => $name] : $email)
-                        ->send($this->postman);
+                        ->send(Yii::$app->getMailer());
                     $this->result->addCount($sent ?
                         ResultInterface::SENT_COUNTER : ResultInterface::SKIP_COUNTER);
                 } catch (Exception $e) {

@@ -9,6 +9,10 @@ extensions:
     enabled:
         - Codeception\Extension\RunFailed
 bootstrap: _bootstrap.php
+modules:
+    config:
+        Yii2:
+            configFile: 'tests/app/config/test.php'
 settings:
     colors: true
     memory_limit: 64M

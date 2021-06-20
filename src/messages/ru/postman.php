@@ -25,4 +25,6 @@ return [
     'Task for mailing added to the queue' => 'Задача для рассылки добавлена в очередь',
     'Execution time' => 'Время выполнения',
     'Collectors' => 'Условия рассылки',
+    'Send' => 'Отправить',
+    '{email} is not valid e-mail' => 'Некорректный E-mail адрес {email}',
 ];

@@ -43,6 +43,8 @@ interface ProcessorInterface
     /**
      * @return ResultInterface
      * @throws TimeLimitException
+     * @throws EmptyMessageException
+     * @throws MailTemplateMissingException
      */
     public function execute(): ResultInterface;
 

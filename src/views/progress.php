@@ -7,7 +7,6 @@
  */
 
 /** @var yii\web\View $this */
-
 /** @var \elfuvo\postman\result\ResultInterface $result */
 
 ?>
@@ -38,9 +37,11 @@ elseif ($result->getProgressTotal() && $result->getProgressDone() >= $result->ge
             <p><?= Yii::t('postman', 'Distribution is over'); ?></p>
             <p><?= Yii::t('postman', 'Mailing statistic'); ?>: <br/>
                 <span><?= Yii::t('postman', 'Letters sent'); ?>:
-                    <?= $result->getCounter($result::SENT_COUNTER); ?></span><br/>
+                    <span class="letters-sent"><?= $result->getCounter($result::SENT_COUNTER); ?></span>
+                </span><br/>
                 <span><?= Yii::t('postman', 'Letters not sent'); ?>:
-                    <?= $result->getCounter($result::SKIP_COUNTER); ?></span><br/>
+                    <span class="letters-fail"><?= $result->getCounter($result::SKIP_COUNTER); ?></span>
+                </span><br/>
             </p>
         </div>
         <?php
@@ -49,7 +50,7 @@ elseif ($result->getProgressTotal() && $result->getProgressDone() >= $result->ge
                 <p>
                     <?= Yii::t('postman', 'Errors'); ?>:
                 </p>
-                <p>
+                <p class="letters-errors">
                     <?= implode('<br />', $result->getErrors()); ?>
                 </p>
             </div>

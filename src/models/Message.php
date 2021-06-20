@@ -35,7 +35,7 @@ class Message extends Model implements JsonSerializable
     /**
      * @var string
      */
-    public $template;
+    public $template = '@elfuvo/postman/mail/simple';
 
     /**
      * @return array
@@ -64,7 +64,7 @@ class Message extends Model implements JsonSerializable
     /**
      * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return ['class' => self::class, 'attributes' => $this->toArray()];
     }

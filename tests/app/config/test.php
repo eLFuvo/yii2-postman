@@ -6,24 +6,13 @@
  * Time: 21:33
  */
 
-return \yii\helpers\ArrayHelper::merge(require('common.php'),
+return \yii\helpers\ArrayHelper::merge(
+    require(__DIR__ . '/common.php'),
     [
-        'id' => 'tests',
-        'controllerNamespace' => 'elfuvo\\import\\app\\controllers',
+        'id' => 'web-tests',
+        'controllerNamespace' => 'elfuvo\\postman\\controllers\\backend',
         'viewPath' => '@app/views',
-        'defaultRoute' => 'default/upload-file-import',
-        'name' => 'Import wizard',
-        'timeZone' => 'UTC',
-        'language' => 'ru',
-        'basePath' => dirname(__DIR__),
-        'aliases' => [
-            '@tests' => '@root/tests',
-            '@public' => '@app/web',
-        ],
-        'container' => [
-            'singletons' => [],
-            'definitions' => [],
-        ],
+        'defaultRoute' => 'default/index',
         'modules' => [],
         'components' => [
             'session' => [
@@ -46,9 +35,13 @@ return \yii\helpers\ArrayHelper::merge(require('common.php'),
                 ],
                 'baseUrl' => '/',
             ],
-            'errorHandler' => [
-                'class' => \yii\web\ErrorHandler::class,
-                'errorAction' => 'default/error',
+            'assetManager' => [
+                'class' => \yii\web\AssetManager::class,
+                'basePath' => '@app/web/assets',
+                'baseUrl' => '/',
+                'appendTimestamp' => true,
+                'dirMode' => 0755,
+                'fileMode' => 0644,
             ],
         ]
     ]

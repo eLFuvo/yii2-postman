@@ -74,6 +74,7 @@ class IndexAction extends Action
 
     /**
      * @return string|Response
+     * @throws \yii\base\InvalidConfigException
      */
     public function run()
     {
@@ -90,7 +91,9 @@ class IndexAction extends Action
             } else {
                 /** @var Queue $queue */
                 $queue = Instance::ensure($this->queue, Queue::class);
-                $queue->push(new MailerJob($this->processor));
+                $this->processor->getCurrentResult()->resetBatch(); // unset previous result
+                $this->processor->prepareExecute(); // save recipients list
+                $queue->push(new MailerJob());
             }
             Yii::$app->session->addFlash('success', Yii::t('postman', 'Task for mailing added to the queue'));
 
@@ -101,6 +104,10 @@ class IndexAction extends Action
             $searchModel = new PostmanLogSearch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         }
+        // hack for test suit
+        if (YII_ENV_TEST) {
+            $this->controller->layout = false;
+        }
 
         return $this->controller->render(
             $this->view,
@@ -110,6 +117,7 @@ class IndexAction extends Action
                 'progressAction' => $this->progressAction,
                 'dataProvider' => $dataProvider,
                 'searchModel' => $searchModel,
+                'result' => $this->processor->getCurrentResult(),
             ]
         );
     }

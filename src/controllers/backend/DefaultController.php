@@ -22,7 +22,7 @@ class DefaultController extends Controller
     /**
      * @return array|string[]
      */
-    public function actions()
+    public function actions(): array
     {
         return [
             'index' => IndexAction::class,

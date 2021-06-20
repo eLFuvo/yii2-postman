@@ -5,6 +5,7 @@ use elfuvo\postman\actions\IndexAction;
 use elfuvo\postman\collector\TextInputCollector;
 use elfuvo\postman\processor\MailAttachmentProcessor;
 use elfuvo\postman\processor\ProcessorInterface;
+use elfuvo\postman\result\ResultInterface;
 
 /**
  * Class SimpleMailCest
@@ -13,7 +14,7 @@ class FewCollectorsMailCest
 {
     public function _before(FunctionalTester $I)
     {
-        $result = Yii::createObject(\elfuvo\postman\result\ResultInterface::class);
+        $result = Yii::createObject(ResultInterface::class);
         $result->resetBatch();
         Yii::$container->set(ProcessorInterface::class,
             [
@@ -47,7 +48,8 @@ class FewCollectorsMailCest
         // no subject/message
         $I->seeElement('.has-error');
 
-        $message = '<div style="background: url(/img/file.png)">Message <img src="/img/file.png" alt=""></div>';
+        $message = '<div class="message" style="background: url(/img/file.png) no-repeat 0 0;padding-right: 30px;">' .
+            'Message <img src="/img/file.png" alt=""></div>';
 
         // fill required fields
         $I->submitForm('form.postman-form',

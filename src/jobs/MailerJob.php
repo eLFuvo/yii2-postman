@@ -10,7 +10,7 @@ namespace elfuvo\postman\jobs;
 
 use elfuvo\postman\exceptions\TimeLimitException;
 use elfuvo\postman\processor\ProcessorInterface;
-use yii\base\BaseObject;
+use yii\di\Instance;
 use yii\queue\RetryableJobInterface;
 
 /**
@@ -19,7 +19,7 @@ use yii\queue\RetryableJobInterface;
  *
  * @property-read int $ttr
  */
-class MailerJob extends BaseObject implements RetryableJobInterface
+class MailerJob implements RetryableJobInterface
 {
     /**
      * @var ProcessorInterface
@@ -27,39 +27,46 @@ class MailerJob extends BaseObject implements RetryableJobInterface
     protected $processor;
 
     /**
-     * MailerJob constructor.
-     * @param ProcessorInterface $processor
-     * @param array $config
+     * @return array|\elfuvo\postman\processor\ProcessorInterface|object|string
+     * @throws \yii\base\InvalidConfigException
      */
-    public function __construct(ProcessorInterface $processor, $config = [])
+    public function getProcessor()
     {
-        $this->processor = $processor;
-        parent::__construct($config);
+        if (!$this->processor) {
+            $this->processor = Instance::ensure(ProcessorInterface::class, ProcessorInterface::class);
+        }
+
+        return $this->processor;
     }
 
     /**
      * @return int
+     * @throws \yii\base\InvalidConfigException
      */
-    public function getTtr()
+    public function getTtr(): int
     {
-        return $this->processor->getTimeLimit();
+        return $this->getProcessor()->getTimeLimit();
     }
 
     /**
      * @param int $attempt
      * @param \Exception|\Throwable $error
-     * @return bool|void
+     * @return bool
      */
-    public function canRetry($attempt, $error)
+    public function canRetry($attempt, $error): bool
     {
         return $error instanceof TimeLimitException;
     }
 
     /**
      * @param \yii\queue\Queue $queue
+     * @throws \elfuvo\postman\exceptions\EmptyMessageException
+     * @throws \elfuvo\postman\exceptions\MailTemplateMissingException
+     * @throws \elfuvo\postman\exceptions\TimeLimitException
+     * @throws \yii\base\InvalidConfigException
      */
     public function execute($queue)
     {
-        $this->processor->execute();
+        return $this->getProcessor()->execute();
     }
 }

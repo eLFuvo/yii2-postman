@@ -7,7 +7,6 @@
  */
 
 /* @var $this \yii\web\View */
-
 /* @var $content string */
 
 ?>
@@ -19,7 +18,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php
     $this->registerCsrfMetaTags() ?>
-    <title>Import wizard</title>
+    <title>Postman</title>
     <?php
     $this->head() ?>
 </head>

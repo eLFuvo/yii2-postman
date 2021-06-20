@@ -15,12 +15,12 @@ use elfuvo\postman\models\Message;
 use elfuvo\postman\result\ResultInterface;
 use Yii;
 use yii\base\BaseObject;
-use yii\mail\MailerInterface;
 
 /**
  * Class AbstractProcessor
  * @package elfuvo\postman\processor
  *
+ * @property-read string[] $recipients
  * @property-read \elfuvo\postman\result\ResultInterface $currentResult
  */
 abstract class AbstractProcessor extends BaseObject implements ProcessorInterface
@@ -46,11 +46,6 @@ abstract class AbstractProcessor extends BaseObject implements ProcessorInterfac
     protected $collectors = [];
 
     /**
-     * @var MailerInterface
-     */
-    protected $postman;
-
-    /**
      * @var ResultInterface
      */
     protected $result;
@@ -60,15 +55,15 @@ abstract class AbstractProcessor extends BaseObject implements ProcessorInterfac
      * @param ResultInterface $result
      * @param array $config
      */
-    public function __construct(ResultInterface $result, $config = [])
+    public function __construct(ResultInterface $result, array $config = [])
     {
         parent::__construct($config);
-        $this->postman = Yii::$app->getMailer();
         $this->result = $result;
     }
 
     /**
      * @param array $collectors
+     * @throws \yii\base\InvalidConfigException
      */
     public function setCollectors(array $collectors)
     {
@@ -145,6 +140,7 @@ abstract class AbstractProcessor extends BaseObject implements ProcessorInterfac
 
     /**
      * @throws EmptyMessageException
+     * @throws \elfuvo\postman\exceptions\MailTemplateMissingException
      */
     public function prepareExecute()
     {
@@ -181,9 +177,21 @@ abstract class AbstractProcessor extends BaseObject implements ProcessorInterfac
                     }
                     // check against valid email address
                     if (!filter_var($recipient->email, FILTER_VALIDATE_EMAIL)) {
+                        $this->result->addError(
+                            Yii::t('postman', '{email} is not valid e-mail', ['email' => $recipient->email])
+                        );
+                        $this->result->addCount(ResultInterface::SKIP_COUNTER);
                         continue;
                     }
                     $recipients[$recipient->email] = $recipient->name;
+                }
+            }
+            if ($wrongRecipients = $collector->getWrongRecipients()) {
+                foreach ($wrongRecipients as $recipient) {
+                    $this->result->addError(
+                        Yii::t('postman', '{email} is not valid e-mail', ['email' => $recipient])
+                    );
+                    $this->result->addCount(ResultInterface::SKIP_COUNTER);
                 }
             }
         }

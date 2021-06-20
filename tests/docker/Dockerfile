@@ -23,7 +23,7 @@ RUN apk --no-cache add \
     make \
     unzip \
     wget && \
-    docker-php-ext-install bcmath mcrypt zip mbstring pcntl xsl && \
+    docker-php-ext-install bcmath mcrypt zip mbstring pcntl xsl dom json && \
     docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
     docker-php-ext-install gd && \
     apk del build-base && \

@@ -20,6 +20,7 @@ use yii\widgets\ActiveForm;
 /** @var $progressAction string */
 /** @var $searchModel \elfuvo\postman\models\PostmanLogSearch|null */
 /** @var $dataProvider \yii\data\ActiveDataProvider|null */
+/** @var $result \elfuvo\postman\result\ResultInterface */
 
 $this->title = Yii::t('postman', 'Mailing');
 ?>
@@ -29,7 +30,9 @@ $this->title = Yii::t('postman', 'Mailing');
         <h4 class="card-title"><?= Html::encode($this->title) ?></h4>
     </div>
 
-    <div class="postman-progress-container" data-url="<?= Url::to([$progressAction]) ?>"></div>
+    <div class="postman-progress-container" data-url="<?= Url::to([$progressAction]) ?>">
+        <?= $this->render('progress', ['result' => $result]); ?>
+    </div>
 
     <?php
     if ($dataProvider): ?>
@@ -69,9 +72,7 @@ $this->title = Yii::t('postman', 'Mailing');
 
         <?= $form->field($message, 'body')->textarea(); ?>
 
-        <?= $form->field($message, 'template')
-            ->hiddenInput(['value' => '@elfuvo/postman/mail/simple'])
-            ->label(false); ?>
+        <?= $form->field($message, 'template')->label(false); ?>
 
         <?php
         foreach ($collectors as $collector): ?>
@@ -80,7 +81,7 @@ $this->title = Yii::t('postman', 'Mailing');
         endforeach; ?>
 
         <div class="form-group">
-            <?= Html::submitButton(Yii::t('system', 'Send'),
+            <?= Html::submitButton(Yii::t('postman', 'Send'),
                 ['class' => 'btn btn-primary']) ?>
         </div>
         <?php

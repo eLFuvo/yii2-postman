@@ -23,17 +23,19 @@ In config define classes
 [
     'container' => [
         'definitions' =>[
-                \elfuvo\postman\processor\ProcessorInterface::class => [
+            \elfuvo\postman\processor\ProcessorInterface::class => [
                 'class' => \app\modules\postman\processor\MailAttachmentProcessor::class,
                 'collectors' => [
                     \elfuvo\postman\collector\TextInputCollector::class,
                 ],
             ],
-            \elfuvo\postman\result\ResultInterface::class => \elfuvo\postman\result\DatabaseContinuesResult::class,
+            \elfuvo\postman\result\ResultInterface::class => \elfuvo\postman\result\CacheContinuesResult::class,
         ],
     ]
 ];
 ```
+
+For using `DatabaseContinuesResult` add migration path "" to.
 
 in backend config define module
 
