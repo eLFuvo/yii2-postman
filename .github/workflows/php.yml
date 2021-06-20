@@ -10,8 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Build the docker-compose stack
-        run: docker-compose -f docker-compose.yml -p yii2-postman build
+        run: docker build -t yii2-postman:latest -f ./tests/docker/Dockerfile ./tests/docker
       - name: Install composer packages
-        run: docker run --rm --volume $PWD:/app yii2-postman_application composer install
+        run: docker run --rm --volume $PWD:/app yii2-postman:latest composer install
       - name: Run test suite
-        run: docker run --rm --volume $PWD:/app yii2-postman_application composer test
+        run: docker run --rm --volume $PWD:/app yii2-postman:latest composer test
