@@ -1,0 +1,23 @@
+name: Build
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build the docker-compose stack
+        run: docker-compose -f docker-compose.yml -p yii2-postman build
+      - name: Install composer packages
+        run: docker run --rm --volume $PWD:/app yii2-postman_application composer install
+      - name: Run docker containers
+        run: docker-compose -f docker-compose.yml up -d
+      - name: Check running containers
+        run: docker ps -a
+      - name: Check logs
+        run: docker logs yii2-postman
+      - name: Run test suite
+        run: docker-compose exec -T application composer test

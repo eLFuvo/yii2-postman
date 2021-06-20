@@ -1,0 +1,10 @@
+version: '3'
+services:
+    application:
+        build:
+            context: tests/docker
+            dockerfile: Dockerfile
+        container_name: yii2-postman
+        volumes:
+            - ./:/app
+        command: /app/tests/app/yii serve

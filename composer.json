@@ -1,0 +1,35 @@
+{
+  "name": "elfuvo/yii2-postman",
+  "description": "Почтовая рассылка",
+  "type": "yii2-extension",
+  "keywords": [
+    "yii2",
+    "extension",
+    "mailer",
+    "postman"
+  ],
+  "license": "BSD-3-Clause",
+  "authors": [
+    {
+      "name": "elfuvo",
+      "email": "elfuvo@gmail.com"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  ],
+  "require": {
+    "php": ">=7.1.0",
+    "yiisoft/yii2": "~2.0.12",
+    "yiisoft/yii2-queue": "~2.0.0",
+    "yiisoft/yii2-swiftmailer": "~2.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "elfuvo\\postman\\": "src"
+    }
+  }
+}
