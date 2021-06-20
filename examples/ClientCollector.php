@@ -150,4 +150,12 @@ class ClientCollector extends AbstractCollector
         }
         return implode(', ', $this->getList($this->clientId));
     }
+
+    /**
+     * @return array|null
+     */
+    public function getWrongRecipients(): ?array
+    {
+        return null;
+    }
 }
