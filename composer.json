@@ -1,6 +1,6 @@
 {
   "name": "elfuvo/yii2-postman",
-  "description": "Почтовая рассылка",
+  "description": "Collect E-mails from different sources for mailing",
   "type": "yii2-extension",
   "keywords": [
     "yii2",

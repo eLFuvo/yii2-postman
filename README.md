@@ -20,7 +20,7 @@ Either run
 php composer.phar require --prefer-dist elfuvo/postman "~0.0.2"
 ```
 
-or add
+or add into `composer.json`
 
 ```
 "elfuvo/postman": "~0.0.2"
@@ -28,7 +28,7 @@ or add
 
 Use:
 ====
-In config define classes
+In common config define classes
 
 ```php
 [
